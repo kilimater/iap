@@ -52,19 +52,23 @@
 #include "fatfs.h"
 
 /* USER CODE BEGIN Includes */
-
+#include <sfud.h>
+#include <fal.h>
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+CRC_HandleTypeDef hcrc;
+
 SD_HandleTypeDef hsd;
 
 SPI_HandleTypeDef hspi1;
 
 UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+sfud_flash sfud_norflash0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,6 +77,8 @@ static void MX_GPIO_Init(void);
 static void MX_SDIO_SD_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_USART3_UART_Init(void);
+static void MX_CRC_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -116,8 +122,14 @@ int main(void)
   MX_SPI1_Init();
   MX_FATFS_Init();
   MX_USART1_UART_Init();
+  MX_USART3_UART_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
-
+//  if (sfud_init() == SFUD_SUCCESS)
+//  {
+//	
+//  }
+  fal_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -191,6 +203,18 @@ void SystemClock_Config(void)
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
+/* CRC init function */
+static void MX_CRC_Init(void)
+{
+
+  hcrc.Instance = CRC;
+  if (HAL_CRC_Init(&hcrc) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
 /* SDIO init function */
 static void MX_SDIO_SD_Init(void)
 {
@@ -248,6 +272,25 @@ static void MX_USART1_UART_Init(void)
 
 }
 
+/* USART3 init function */
+static void MX_USART3_UART_Init(void)
+{
+
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 115200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
 /** Configure pins as 
         * Analog 
         * Input 
@@ -263,11 +306,21 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PA4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PD0 */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
@@ -285,7 +338,25 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+uint8_t SPI1_ReadWriteByte(uint8_t TxData)
+{
+    uint8_t Rxdata;
+    HAL_SPI_TransmitReceive(&hspi1,&TxData,&Rxdata,1, 1000);       
+ 	return Rxdata;          		    //返回收到的数据		
+}
 
+
+int fputc(int ch, FILE *f)
+{
+	uint8_t tmp[1] = {ch};
+	HAL_UART_Transmit(&huart3,tmp,1,2);
+    return 1;
+}
+
+int fgetc(FILE *f)
+{
+  
+}
 /* USER CODE END 4 */
 
 /**

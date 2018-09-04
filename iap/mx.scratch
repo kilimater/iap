@@ -35,7 +35,7 @@
     <usedDebug>true</usedDebug>
     	<debugprobe>swd</debugprobe>
     <optimization></optimization>
-    <icfloc>1</icfloc>
+    <icfloc>0</icfloc>
     <Adefines>
         <define></define>
     </Adefines>   
@@ -97,6 +97,9 @@
 	    <name>Drivers</name> 
 		   <group>
 		 		<name>STM32F4xx_HAL_Driver</name>
+						<file>
+							<name>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c</name>
+						</file>
 						<file>
 							<name>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_sdmmc.c</name>
 						</file>
