@@ -66,6 +66,8 @@ uint32_t Str2Int(uint8_t *inputstr, uint32_t *intnum);
 void Serial_PutString(uint8_t *p_string);
 HAL_StatusTypeDef Serial_PutByte(uint8_t param);
 
+
+extern UART_HandleTypeDef huart1;
 #endif  /* __COMMON_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

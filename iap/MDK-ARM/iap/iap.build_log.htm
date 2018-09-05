@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: ¦ÌVision V5.25.2.0
 Copyright (C) 2018 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: 123 sdf, sdfjkkj, LIC=CRMUH-WSA9W-IMU9B-2NCKR-32TW7-LALRX
+License Information: 123 12312, 123123123, LIC=7YKPC-7M5H6-KS8YM-XU4QC-TS54W-VWY2E
  
 Tool Versions:
 Toolchain:       MDK-ARM Professional  Version: 5.25.2.0
@@ -21,20 +21,18 @@ Target DLL:      Segger\JL2CM3.dll V2.99.29.0
 Dialog DLL:      TCM.DLL V1.35.1.0
  
 <h2>Project:</h2>
-F:\EASTWIN\eQ1620\software\iap\iap\MDK-ARM\iap.uvprojx
+F:\work\iap\iap\MDK-ARM\iap.uvprojx
 Project File Date:  09/04/2018
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'iap'
 compiling common.c...
-..\Src\common.c(169): error:  #20: identifier "UartHandle" is undefined
-    HAL_UART_Transmit(&UartHandle, p_string, length, TX_TIMEOUT);
-..\Src\common.c(180): error:  #20: identifier "UartHandle" is undefined
-    if ( UartHandle.State == HAL_UART_STATE_TIMEOUT )
-..\Src\common.c(184): error:  #20: identifier "UartHandle" is undefined
-    return HAL_UART_Transmit(&UartHandle, &param, 1, TX_TIMEOUT);
-..\Src\common.c: 0 warnings, 3 errors
+..\Src\common.c(180): error:  #136: struct "<unnamed>"  has no field "State"
+    if ( huart1.State == HAL_UART_STATE_TIMEOUT )
+..\Src\common.c(182): error:  #136: struct "<unnamed>"  has no field "State"
+      huart1.State = HAL_UART_STATE_READY;
+..\Src\common.c: 0 warnings, 2 errors
 compiling flash_if.c...
 ..\Src\flash_if.c(69): error:  #20: identifier "FLASH_FLAG_OPTVERR" is undefined
     __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_PGSERR | FLASH_FLAG_WRPERR | FLASH_FLAG_OPTVERR);
@@ -125,7 +123,7 @@ compiling ymodem.c...
 ..\Src\ymodem.c(630): error:  #20: identifier "CrcHandle" is undefined
       temp_crc = HAL_CRC_Calculate(&CrcHandle, (uint32_t*)&aPacketData[PACKET_DATA_INDEX], PACKET_SIZE);
 ..\Src\ymodem.c: 0 warnings, 10 errors
-"iap\iap.axf" - 45 Error(s), 0 Warning(s).
+"iap\iap.axf" - 44 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -149,7 +147,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.1.1
 Target not created.
-Build Time Elapsed:  00:00:14
+Build Time Elapsed:  00:00:16
 </pre>
 </body>
 </html>
