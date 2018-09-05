@@ -11,6 +11,8 @@
 <filestoremove>
     <file>
     <name>..\Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s</name>
+    <name>..\Middlewares\Third_Party\FatFs\src\option\cc936.c</name>
+    <name>..\Middlewares\Third_Party\FatFs\src\option\cc936.c</name>
     </file>
 </filestoremove>
 
@@ -27,7 +29,7 @@
     <name>iap</name>				
     <device>STM32F407VETx</device>		 
     <heapSize>0x200</heapSize>
-    <stackSize>0x400</stackSize>
+    <stackSize>0x1000</stackSize>
     
     	<cpuclock>168</cpuclock>
     	<board>custom</board>

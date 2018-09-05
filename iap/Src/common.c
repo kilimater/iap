@@ -43,6 +43,7 @@
 #include "common.h"
 #include "main.h"
 
+extern UART_HandleTypeDef huart1;
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -166,7 +167,7 @@ void Serial_PutString(uint8_t *p_string)
   {
     length++;
   }
-  HAL_UART_Transmit(&UartHandle, p_string, length, TX_TIMEOUT);
+  HAL_UART_Transmit(&huart1, p_string, length, TX_TIMEOUT);
 }
 
 /**
@@ -177,11 +178,11 @@ void Serial_PutString(uint8_t *p_string)
 HAL_StatusTypeDef Serial_PutByte( uint8_t param )
 {
   /* May be timeouted... */
-  if ( UartHandle.State == HAL_UART_STATE_TIMEOUT )
+  if ( huart1.gState == HAL_UART_STATE_TIMEOUT )
   {
-    UartHandle.State = HAL_UART_STATE_READY;
+    huart1.gState = HAL_UART_STATE_READY;
   }
-  return HAL_UART_Transmit(&UartHandle, &param, 1, TX_TIMEOUT);
+  return HAL_UART_Transmit(&huart1, &param, 1, TX_TIMEOUT);
 }
 /**
   * @}

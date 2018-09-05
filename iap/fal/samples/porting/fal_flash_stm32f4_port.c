@@ -40,8 +40,6 @@
 #define ADDR_FLASH_SECTOR_10     ((uint32_t)0x080C0000) /* Base address of Sector 10, 128 K bytes */
 #define ADDR_FLASH_SECTOR_11     ((uint32_t)0x080E0000) /* Base address of Sector 11, 128 K bytes */
 
-
-
 /**
  * Get the sector of a given address
  *
@@ -197,6 +195,5 @@ static int erase(long offset, size_t size)
 
     return size;
 }
-
 
 const struct fal_flash_dev stm32f4_onchip_flash = { "stm32_onchip", 0x08000000, 1024*1024, 128*1024, {init, read, write, erase} };

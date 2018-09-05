@@ -22,110 +22,15 @@ Dialog DLL:      TCM.DLL V1.35.1.0
  
 <h2>Project:</h2>
 F:\EASTWIN\eQ1620\software\iap\iap\MDK-ARM\iap.uvprojx
-Project File Date:  09/04/2018
+Project File Date:  09/05/2018
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'iap'
-compiling common.c...
-..\Src\common.c(169): error:  #20: identifier "UartHandle" is undefined
-    HAL_UART_Transmit(&UartHandle, p_string, length, TX_TIMEOUT);
-..\Src\common.c(180): error:  #20: identifier "UartHandle" is undefined
-    if ( UartHandle.State == HAL_UART_STATE_TIMEOUT )
-..\Src\common.c(184): error:  #20: identifier "UartHandle" is undefined
-    return HAL_UART_Transmit(&UartHandle, &param, 1, TX_TIMEOUT);
-..\Src\common.c: 0 warnings, 3 errors
-compiling flash_if.c...
-..\Src\flash_if.c(69): error:  #20: identifier "FLASH_FLAG_OPTVERR" is undefined
-    __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_PGSERR | FLASH_FLAG_WRPERR | FLASH_FLAG_OPTVERR);
-..\Src\flash_if.c(91): error:  #20: identifier "FLASH_SIZE" is undefined
-    NbrOfPages = (FLASH_START_ADRESS + FLASH_SIZE);
-..\Src\flash_if.c(92): error:  #20: identifier "FLASH_PAGE_SIZE" is undefined
-    NbrOfPages = (NbrOfPages - start) / FLASH_PAGE_SIZE;
-..\Src\flash_if.c(97): error:  #136: struct "<unnamed>"  has no field "NbPages"
-      pEraseInit.NbPages = NbrOfPages % FLASH_PAGE_NBPERBANK;
-..\Src\flash_if.c(98): error:  #136: struct "<unnamed>"  has no field "Page"
-      pEraseInit.Page = FLASH_PAGE_NBPERBANK - pEraseInit.NbPages;
-..\Src\flash_if.c(98): error:  #136: struct "<unnamed>"  has no field "NbPages"
-      pEraseInit.Page = FLASH_PAGE_NBPERBANK - pEraseInit.NbPages;
-..\Src\flash_if.c(99): error:  #20: identifier "FLASH_TYPEERASE_PAGES" is undefined
-      pEraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
-..\Src\flash_if.c(107): error:  #20: identifier "FLASH_BANK_2" is undefined
-      pEraseInit.Banks = FLASH_BANK_2;
-..\Src\flash_if.c(108): error:  #136: struct "<unnamed>"  has no field "NbPages"
-      pEraseInit.NbPages = NbrOfPages;
-..\Src\flash_if.c(109): error:  #136: struct "<unnamed>"  has no field "Page"
-      pEraseInit.Page = FLASH_PAGE_NBPERBANK - pEraseInit.NbPages;
-..\Src\flash_if.c(109): error:  #136: struct "<unnamed>"  has no field "NbPages"
-      pEraseInit.Page = FLASH_PAGE_NBPERBANK - pEraseInit.NbPages;
-..\Src\flash_if.c(110): error:  #20: identifier "FLASH_TYPEERASE_PAGES" is undefined
-      pEraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
-..\Src\flash_if.c(193): error:  #136: struct "<unnamed>"  has no field "WRPArea"
-    OptionsBytesStruct1.WRPArea = OB_WRPAREA_BANK1_AREAA;
-..\Src\flash_if.c(193): error:  #20: identifier "OB_WRPAREA_BANK1_AREAA" is undefined
-    OptionsBytesStruct1.WRPArea = OB_WRPAREA_BANK1_AREAA;
-..\Src\flash_if.c(194): error:  #136: struct "<unnamed>"  has no field "PCROPConfig"
-    OptionsBytesStruct1.PCROPConfig = FLASH_BANK_1;
-..\Src\flash_if.c(195): error:  #136: struct "<unnamed>"  has no field "WRPArea"
-    OptionsBytesStruct2.WRPArea = OB_WRPAREA_BANK1_AREAB;
-..\Src\flash_if.c(195): error:  #20: identifier "OB_WRPAREA_BANK1_AREAB" is undefined
-    OptionsBytesStruct2.WRPArea = OB_WRPAREA_BANK1_AREAB;
-..\Src\flash_if.c(196): error:  #136: struct "<unnamed>"  has no field "PCROPConfig"
-    OptionsBytesStruct2.PCROPConfig = FLASH_BANK_1;
-..\Src\flash_if.c(197): error:  #136: struct "<unnamed>"  has no field "WRPArea"
-    OptionsBytesStruct3.WRPArea = OB_WRPAREA_BANK2_AREAA;
-..\Src\flash_if.c(197): error:  #20: identifier "OB_WRPAREA_BANK2_AREAA" is undefined
-    OptionsBytesStruct3.WRPArea = OB_WRPAREA_BANK2_AREAA;
-..\Src\flash_if.c(198): error:  #136: struct "<unnamed>"  has no field "PCROPConfig"
-    OptionsBytesStruct3.PCROPConfig = FLASH_BANK_2;
-..\Src\flash_if.c(198): error:  #20: identifier "FLASH_BANK_2" is undefined
-    OptionsBytesStruct3.PCROPConfig = FLASH_BANK_2;
-..\Src\flash_if.c(199): error:  #136: struct "<unnamed>"  has no field "WRPArea"
-    OptionsBytesStruct4.WRPArea = OB_WRPAREA_BANK2_AREAB;
-..\Src\flash_if.c(199): error:  #20: identifier "OB_WRPAREA_BANK2_AREAB" is undefined
-    OptionsBytesStruct4.WRPArea = OB_WRPAREA_BANK2_AREAB;
-..\Src\flash_if.c(200): error:  #136: struct "<unnamed>"  has no field "PCROPConfig"
-    OptionsBytesStruct4.PCROPConfig = FLASH_BANK_2;
-..\Src\flash_if.c(213): error:  #136: struct "<unnamed>"  has no field "PCROPEndAddr"
-    if(OptionsBytesStruct1.PCROPEndAddr > OptionsBytesStruct1.PCROPStartAddr)
-..\Src\flash_if.c(213): error:  #136: struct "<unnamed>"  has no field "PCROPStartAddr"
-    if(OptionsBytesStruct1.PCROPEndAddr > OptionsBytesStruct1.PCROPStartAddr)
-..\Src\flash_if.c(216): error:  #136: struct "<unnamed>"  has no field "PCROPStartAddr"
-      if(OptionsBytesStruct1.PCROPStartAddr > APPLICATION_ADDRESS) 
-..\Src\flash_if.c(222): error:  #136: struct "<unnamed>"  has no field "PCROPEndAddr"
-    if(OptionsBytesStruct2.PCROPEndAddr > OptionsBytesStruct2.PCROPStartAddr)
-..\Src\flash_if.c(222): error:  #136: struct "<unnamed>"  has no field "PCROPStartAddr"
-    if(OptionsBytesStruct2.PCROPEndAddr > OptionsBytesStruct2.PCROPStartAddr)
-..\Src\flash_if.c: 0 warnings, 30 errors
-compiling menu.c...
-..\Src\menu.c(122): error:  #20: identifier "UartHandle" is undefined
-    HAL_UART_Receive(&UartHandle, &status, 1, RX_TIMEOUT);
-..\Src\menu.c(186): error:  #20: identifier "UartHandle" is undefined
-      __HAL_UART_FLUSH_DRREGISTER(&UartHandle);
-..\Src\menu.c: 0 warnings, 2 errors
-compiling ymodem.c...
-..\Src\ymodem.c(75): error:  #20: identifier "UartHandle" is undefined
-    status = HAL_UART_Receive(&UartHandle, &char1, 1, timeout);
-..\Src\ymodem.c(126): error:  #20: identifier "CrcHandle" is undefined
-            if (HAL_CRC_Calculate(&CrcHandle, (uint32_t*)&p_data[PACKET_DATA_INDEX], packet_size) != crc )
-..\Src\ymodem.c(367): error:  #20: identifier "UartHandle" is undefined
-                        HAL_UART_Transmit(&UartHandle, &tmp, 1, NAK_TIMEOUT);
-..\Src\ymodem.c(465): error:  #20: identifier "UartHandle" is undefined
-      HAL_UART_Transmit(&UartHandle, &aPacketData[PACKET_START_INDEX], PACKET_SIZE + PACKET_HEADER_SIZE, NAK_TIMEOUT);
-..\Src\ymodem.c(469): error:  #20: identifier "CrcHandle" is undefined
-      temp_crc = HAL_CRC_Calculate(&CrcHandle, (uint32_t*)&aPacketData[PACKET_DATA_INDEX], PACKET_SIZE);
-..\Src\ymodem.c(529): error:  #20: identifier "UartHandle" is undefined
-        HAL_UART_Transmit(&UartHandle, &aPacketData[PACKET_START_INDEX], pkt_size + PACKET_HEADER_SIZE, NAK_TIMEOUT);
-..\Src\ymodem.c(533): error:  #20: identifier "CrcHandle" is undefined
-        temp_crc = HAL_CRC_Calculate(&CrcHandle, (uint32_t*)&aPacketData[PACKET_DATA_INDEX], pkt_size);
-..\Src\ymodem.c(586): error:  #20: identifier "UartHandle" is undefined
-      if (HAL_UART_Receive(&UartHandle, &a_rx_ctrl[0], 1, NAK_TIMEOUT) == HAL_OK)
-..\Src\ymodem.c(626): error:  #20: identifier "UartHandle" is undefined
-      HAL_UART_Transmit(&UartHandle, &aPacketData[PACKET_START_INDEX], PACKET_SIZE + PACKET_HEADER_SIZE, NAK_TIMEOUT);
-..\Src\ymodem.c(630): error:  #20: identifier "CrcHandle" is undefined
-      temp_crc = HAL_CRC_Calculate(&CrcHandle, (uint32_t*)&aPacketData[PACKET_DATA_INDEX], PACKET_SIZE);
-..\Src\ymodem.c: 0 warnings, 10 errors
-"iap\iap.axf" - 45 Error(s), 0 Warning(s).
+compiling fal_flash_stm32f4_port.c...
+linking...
+Program Size: Code=22764 RO-data=2236 RW-data=72 ZI-data=9744  
+"iap\iap.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -148,8 +53,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.1.1
-Target not created.
-Build Time Elapsed:  00:00:14
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>

@@ -66,7 +66,7 @@ if (!(EXPR))                                                                   \
 #ifdef  log_d
 #undef  log_d
 #endif
-#define log_d(...)                     printf("[D/FAL] (%s:%d) ", __FUNCTION__, __LINE__);           printf(__VA_ARGS__);printf("\n")
+#define log_d(...)                     printf("[D/FAL] (%s:%d) ", __FUNCTION__, __LINE__);           printf(__VA_ARGS__);printf("\r\n")
 
 #else
 
@@ -86,13 +86,13 @@ if (!(EXPR))                                                                   \
 #ifdef  log_e
 #undef  log_e
 #endif
-#define log_e(...)                     printf("\033[31;22m[E/FAL] (%s:%d) ", __FUNCTION__, __LINE__);printf(__VA_ARGS__);printf("\033[0m\n")
+#define log_e(...)                     printf("\033[31;22m[E/FAL] (%s:%d) ", __FUNCTION__, __LINE__);printf(__VA_ARGS__);printf("\033[0m\r\n")
 
 /* info level log */
 #ifdef  log_i
 #undef  log_i
 #endif
-#define log_i(...)                     printf("\033[36;22m[I/FAL] ");                                printf(__VA_ARGS__);printf("\033[0m\n")
+#define log_i(...)                     printf("\033[36;22m[I/FAL] ");                                printf(__VA_ARGS__);printf("\033[0m\r\n")
 
 /* FAL flash and partition device name max length */
 #ifndef FAL_DEV_NAME_MAX

@@ -86,7 +86,7 @@ typedef enum
 
 /* Exported functions ------------------------------------------------------- */
 COM_StatusTypeDef Ymodem_Receive(uint32_t *p_size);
-COM_StatusTypeDef Ymodem_Transmit(uint8_t *p_buf, const uint8_t *p_file_name, uint32_t file_size);
+
 
 #endif  /* __YMODEM_H_ */
 
