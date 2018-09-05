@@ -223,9 +223,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                       result = COM_LIMIT;
                     }
                     /* erase user application area */
-                    
-					
-					//fal_partition_erase(, phy_pos, buffer, phy_size);
+					          FLASH_If_Erase(APPLICATION_ADDRESS);
 					
                     *p_size = filesize;
 
@@ -246,7 +244,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                   ramsource = (uint32_t) & aPacketData[PACKET_DATA_INDEX];
 
                   /* Write received data in Flash */
-                  if (fal_partition_write(flashdestination, (uint32_t*) ramsource, packet_length/4) == FLASHIF_OK)                   
+                  if (FLASH_If_Write(flashdestination, (uint32_t*) ramsource, packet_length/4) == FLASHIF_OK)                   
                   {
                     flashdestination += packet_length;
                     Serial_PutByte(ACK);

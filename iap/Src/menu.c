@@ -117,28 +117,28 @@ void SerialDownload(void)
   * @param  None
   * @retval None
   */
-void SerialUpload(void)
-{
-  uint8_t status = 0;
+// void SerialUpload(void)
+// {
+//   uint8_t status = 0;
 
-  Serial_PutString((uint8_t *)"\n\n\rSelect Receive File\n\r");
+//   Serial_PutString((uint8_t *)"\n\n\rSelect Receive File\n\r");
 
-  HAL_UART_Receive(&huart1, &status, 1, RX_TIMEOUT);
-  if ( status == CRC16)
-  {
-    /* Transmit the flash image through ymodem protocol */
-    status = Ymodem_Transmit((uint8_t*)APPLICATION_ADDRESS, (const uint8_t*)"UploadedFlashImage.bin", USER_FLASH_SIZE);
+//   HAL_UART_Receive(&huart1, &status, 1, RX_TIMEOUT);
+//   if ( status == CRC16)
+//   {
+//     /* Transmit the flash image through ymodem protocol */
+//     status = Ymodem_Transmit((uint8_t*)APPLICATION_ADDRESS, (const uint8_t*)"UploadedFlashImage.bin", USER_FLASH_SIZE);
 
-    if (status != 0)
-    {
-      Serial_PutString((uint8_t *)"\n\rError Occurred while Transmitting File\n\r");
-    }
-    else
-    {
-      Serial_PutString((uint8_t *)"\n\rFile uploaded successfully \n\r");
-    }
-  }
-}
+//     if (status != 0)
+//     {
+//       Serial_PutString((uint8_t *)"\n\rError Occurred while Transmitting File\n\r");
+//     }
+//     else
+//     {
+//       Serial_PutString((uint8_t *)"\n\rFile uploaded successfully \n\r");
+//     }
+//   }
+// }
 
 /**
   * @brief  Display the Main Menu on HyperTerminal
@@ -148,7 +148,7 @@ void SerialUpload(void)
 void Main_Menu(void)
 {
   uint8_t key = 0;
-
+  uint32_t ret = 0;
   while (1)
   {
 
@@ -178,8 +178,8 @@ void Main_Menu(void)
     __HAL_UART_FLUSH_DRREGISTER(&huart1);
 	
     /* Receive key */
-    HAL_UART_Receive(&huart1, &key, 1, RX_TIMEOUT);
-
+    ret = HAL_UART_Receive(&huart1, &key, 1, RX_TIMEOUT);
+    if(ret == HAL_TIMEOUT) break;
     switch (key)
     {
     case '1' :
@@ -188,7 +188,7 @@ void Main_Menu(void)
       break;
     case '2' :
       /* Upload user application from the Flash */
-      SerialUpload();
+      //SerialUpload();
       break;
     case '3' :
       Serial_PutString((uint8_t *)"Start program execution......\r\n\n");

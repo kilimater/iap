@@ -49,6 +49,9 @@ extern uint8_t aFileName[FILE_NAME_LENGTH];
 /* Private variables ---------------------------------------------------------*/
 typedef  void (*pFunction)(void);
 
+
+extern pFunction JumpToApplication;
+extern uint32_t JumpAddress;
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/

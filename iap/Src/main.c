@@ -54,6 +54,7 @@
 /* USER CODE BEGIN Includes */
 #include <sfud.h>
 #include <fal.h>
+#include "menu.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -74,8 +75,7 @@ const struct fal_partition *part;
 uint8_t iap_buffer[IAP_PAGE_SIZE] __attribute__((aligned(4)));
 
 
-pFunction JumpToApplication;
-uint32_t JumpAddress;
+
 
 /* USER CODE END PV */
 
@@ -94,7 +94,16 @@ static void MX_CRC_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+void FLASH_If_Init(void)
+{
+  /* Unlock the Program memory */
+  HAL_FLASH_Unlock();
 
+  /* Clear all FLASH flags */
+  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_PGSERR | FLASH_FLAG_WRPERR | FLASH_FLAG_OPTVERR);
+  /* Unlock the Program memory */
+  HAL_FLASH_Lock();
+}
 /* USER CODE END 0 */
 
 /**
@@ -135,7 +144,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   fal_init();
-
+  FLASH_If_Init();
+  //sd update app
 	do {
 
 		if(f_mount(&SDFatFS,(const TCHAR *)"0:/",0) == RES_OK)
@@ -174,8 +184,12 @@ int main(void)
         for(i = 0; i ++; )
         {
           FRESULT rt = f_read(&SDFile,iap_buffer,IAP_PAGE_SIZE,&byte_read_count);
-          if(rt == FR_OK)
+          printf("f_read return %d\r\n",rt); 
+          printf("byte_read_count = %d\r\n",byte_read_count); 
+          if(rt != FR_OK || byte_read_count == 0)
           {
+            break;
+          }
             if(byte_read_count < IAP_PAGE_SIZE)
             {
               fal_partition_write(part, i * IAP_PAGE_SIZE,iap_buffer,byte_read_count);
@@ -185,11 +199,7 @@ int main(void)
             {
               fal_partition_write(part, i * IAP_PAGE_SIZE,iap_buffer,IAP_PAGE_SIZE);
             }
-          }
-          else
-          {
-            break;
-          }
+            memset(iap_buffer,0,IAP_PAGE_SIZE);
         }
 		f_close(&SDFile);
         printf("Copy file ok!\r\n"); 
@@ -203,10 +213,21 @@ int main(void)
         JumpToApplication();
 	
 	}while(0);
+  //ymodem update app
+  part = fal_partition_find("app");
+  if(part != NULL)
+  {
+    printf("fal find app partition!\r\n"); 
+  }
+  else
+  {
+    printf("fal can not find app partition!\r\n");
+    break;
+  }
+  fal_partition_erase_all(part);
+  printf("App partition erase ok!\r\n"); 
 
-	
-
-	
+	Main_Menu();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -285,6 +306,26 @@ static void MX_CRC_Init(void)
 {
 
   hcrc.Instance = CRC;
+
+  /* The CRC-16-CCIT polynomial is used */
+  hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_DISABLE;
+  hcrc.Init.GeneratingPolynomial    = 0x1021;
+  hcrc.Init.CRCLength               = CRC_POLYLENGTH_16B;
+
+  /* The zero init value is used */
+  hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_DISABLE;
+  hcrc.Init.InitValue               = 0;
+
+  /* The input data are not inverted */
+  hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
+
+  /* The output data are not inverted */
+  hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+
+  /* The input data are 32-bit long words */
+  hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
+
+
   if (HAL_CRC_Init(&hcrc) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);

@@ -35,10 +35,7 @@
 #define ADDR_FLASH_SECTOR_5      ((uint32_t)0x08020000) /* Base address of Sector 5, 128 K bytes  */
 #define ADDR_FLASH_SECTOR_6      ((uint32_t)0x08040000) /* Base address of Sector 6, 128 K bytes  */
 #define ADDR_FLASH_SECTOR_7      ((uint32_t)0x08060000) /* Base address of Sector 7, 128 K bytes  */
-#define ADDR_FLASH_SECTOR_8      ((uint32_t)0x08080000) /* Base address of Sector 8, 128 K bytes  */
-#define ADDR_FLASH_SECTOR_9      ((uint32_t)0x080A0000) /* Base address of Sector 9, 128 K bytes  */
-#define ADDR_FLASH_SECTOR_10     ((uint32_t)0x080C0000) /* Base address of Sector 10, 128 K bytes */
-#define ADDR_FLASH_SECTOR_11     ((uint32_t)0x080E0000) /* Base address of Sector 11, 128 K bytes */
+
 
 /**
  * Get the sector of a given address
@@ -79,25 +76,9 @@ static uint32_t stm32_get_sector(uint32_t address)
     {
         sector = FLASH_SECTOR_6;
     }
-    else if ((address < ADDR_FLASH_SECTOR_8) && (address >= ADDR_FLASH_SECTOR_7))
-    {
-        sector = FLASH_SECTOR_7;
-    }
-    else if ((address < ADDR_FLASH_SECTOR_9) && (address >= ADDR_FLASH_SECTOR_8))
-    {
-        sector = FLASH_SECTOR_8;
-    }
-    else if ((address < ADDR_FLASH_SECTOR_10) && (address >= ADDR_FLASH_SECTOR_9))
-    {
-        sector = FLASH_SECTOR_9;
-    }
-    else if ((address < ADDR_FLASH_SECTOR_11) && (address >= ADDR_FLASH_SECTOR_10))
-    {
-        sector = FLASH_SECTOR_10;
-    }
     else
     {
-        sector = FLASH_SECTOR_11;
+        sector = FLASH_SECTOR_7;
     }
 
     return sector;
@@ -122,10 +103,6 @@ static uint32_t stm32_get_sector_size(uint32_t sector) {
     case FLASH_SECTOR_5: return 128 * 1024;
     case FLASH_SECTOR_6: return 128 * 1024;
     case FLASH_SECTOR_7: return 128 * 1024;
-    case FLASH_SECTOR_8: return 128 * 1024;
-    case FLASH_SECTOR_9: return 128 * 1024;
-    case FLASH_SECTOR_10: return 128 * 1024;
-    case FLASH_SECTOR_11: return 128 * 1024;
     default : return 128 * 1024;
     }
 }
@@ -153,9 +130,9 @@ static int write(long offset, const uint8_t *buf, size_t size)
     uint32_t addr = stm32f4_onchip_flash.addr + offset;
 
     HAL_FLASH_Unlock();
-    __HAL_FLASH_CLEAR_FLAG(
-            FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR
-                    | FLASH_FLAG_PGSERR);
+    // __HAL_FLASH_CLEAR_FLAG(
+    //         FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR
+    //                 | FLASH_FLAG_PGSERR);
     for (i = 0; i < size; i++, buf++, addr++)
     {
         /* write data */
@@ -178,17 +155,30 @@ static int erase(long offset, size_t size)
     uint32_t cur_erase_sector;
     uint32_t addr = stm32f4_onchip_flash.addr + offset;
 
+    FLASH_EraseInitTypeDef FlashEraseInit;
+    HAL_StatusTypeDef FlashStatus = HAL_OK;
+    uint32_t SectorError = 0;
+
     /* start erase */
     HAL_FLASH_Unlock();
-    __HAL_FLASH_CLEAR_FLAG(
-            FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR
-                    | FLASH_FLAG_PGSERR);
+    // __HAL_FLASH_CLEAR_FLAG(
+    //         FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR
+    //                 | FLASH_FLAG_PGSERR);
     /* it will stop when erased size is greater than setting size */
     while (erased_size < size)
     {
-        cur_erase_sector = stm32_get_sector(addr + erased_size);
-        FLASH_Erase_Sector(cur_erase_sector, FLASH_VOLTAGE_RANGE_3);
-
+        cur_erase_sector = stm32_get_sector(addr + erased_size); 
+        
+        FlashEraseInit.TypeErase = FLASH_TYPEERASE_SECTORS;      
+        FlashEraseInit.Sector = cur_erase_sector; 
+        FlashEraseInit.NbSectors = 1;                             
+        FlashEraseInit.VoltageRange = FLASH_VOLTAGE_RANGE_3;      
+        if(HAL_FLASHEx_Erase(&FlashEraseInit,&SectorError) != HAL_OK) 
+        {
+            printf("Erase flash sector occur error!\r\n");
+            break;
+        }
+        FLASH_WaitForLastOperation(10000); 
         erased_size += stm32_get_sector_size(cur_erase_sector);
     }
     HAL_FLASH_Lock();
@@ -196,4 +186,4 @@ static int erase(long offset, size_t size)
     return size;
 }
 
-const struct fal_flash_dev stm32f4_onchip_flash = { "stm32_onchip", 0x08000000, 1024*1024, 128*1024, {init, read, write, erase} };
+const struct fal_flash_dev stm32f4_onchip_flash = { "stm32_onchip", 0x08000000, 512*1024, 128*1024, {init, read, write, erase} };
