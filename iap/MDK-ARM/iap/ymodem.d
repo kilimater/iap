@@ -37,3 +37,7 @@ iap\ymodem.o: ../Inc/common.h
 iap\ymodem.o: ../Inc/ymodem.h
 iap\ymodem.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 iap\ymodem.o: ../Inc/menu.h
+iap\ymodem.o: ..\fal\inc\fal.h
+iap\ymodem.o: ..\fal\samples\porting\fal_cfg.h
+iap\ymodem.o: ../Inc/config.h
+iap\ymodem.o: ..\fal\inc\fal_def.h

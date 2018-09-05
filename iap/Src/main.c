@@ -69,6 +69,14 @@ UART_HandleTypeDef huart3;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 sfud_flash sfud_norflash0;
+const struct fal_partition *part;
+#define IAP_PAGE_SIZE 4096
+uint8_t iap_buffer[IAP_PAGE_SIZE] __attribute__((aligned(4)));
+
+
+pFunction JumpToApplication;
+uint32_t JumpAddress;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -97,7 +105,7 @@ static void MX_CRC_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  uint32_t byte_read_count;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -125,11 +133,80 @@ int main(void)
   MX_USART3_UART_Init();
   MX_CRC_Init();
   /* USER CODE BEGIN 2 */
-//  if (sfud_init() == SFUD_SUCCESS)
-//  {
-//	
-//  }
+
   fal_init();
+
+	do {
+
+		if(f_mount(&SDFatFS,(const TCHAR *)"0:/",0) == RES_OK)
+		{
+			printf("FatFs mount ok!\r\n");
+		}
+		else
+		{
+			printf("FatFs mount fail!\r\n");
+			break;
+		}
+		
+		if(f_open(&SDFile, (const TCHAR *)"0:/eQ1620.bin",FA_OPEN_EXISTING|FA_READ) == FR_OK)
+		{
+			printf("Open file ok!\r\n");
+		}
+		else
+		{
+			printf("Open file fail!\r\n");
+			break;
+		}	
+
+		part = fal_partition_find("app");
+		if(part != NULL)
+		{
+            printf("fal find app partition!\r\n"); 
+		}
+		else
+		{
+            printf("fal can not find app partition!\r\n");
+            break;
+		}
+		fal_partition_erase_all(part);
+        printf("App partition erase ok!\r\n"); 
+        uint8_t i;
+        for(i = 0; i ++; )
+        {
+          FRESULT rt = f_read(&SDFile,iap_buffer,IAP_PAGE_SIZE,&byte_read_count);
+          if(rt == FR_OK)
+          {
+            if(byte_read_count < IAP_PAGE_SIZE)
+            {
+              fal_partition_write(part, i * IAP_PAGE_SIZE,iap_buffer,byte_read_count);
+              break;
+            }
+            else
+            {
+              fal_partition_write(part, i * IAP_PAGE_SIZE,iap_buffer,IAP_PAGE_SIZE);
+            }
+          }
+          else
+          {
+            break;
+          }
+        }
+		f_close(&SDFile);
+        printf("Copy file ok!\r\n"); 
+        printf("Jump to application!\r\n"); 
+        /* execute the new program */
+        JumpAddress = *(volatile uint32_t*) (0x08020000 + 4);
+        /* Jump to user application */
+        JumpToApplication = (pFunction) JumpAddress;
+        /* Initialize user application's Stack Pointer */
+        __set_MSP(*(volatile uint32_t*) 0x08020000);
+        JumpToApplication();
+	
+	}while(0);
+
+	
+
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -342,15 +419,18 @@ uint8_t SPI1_ReadWriteByte(uint8_t TxData)
 {
     uint8_t Rxdata;
     HAL_SPI_TransmitReceive(&hspi1,&TxData,&Rxdata,1, 1000);       
- 	return Rxdata;          		    //返回收到的数据		
+ 	return Rxdata;          		
 }
 
 
 int fputc(int ch, FILE *f)
 {
-	uint8_t tmp[1] = {ch};
-	HAL_UART_Transmit(&huart3,tmp,1,2);
-    return 1;
+//	uint8_t tmp[1] = {ch};
+//	HAL_UART_Transmit(&huart3,tmp,1,2);
+//    return 1;
+	while((__HAL_UART_GET_FLAG(&huart3,UART_FLAG_TXE) == RESET));
+	huart3.Instance->DR = ch;
+	
 }
 
 int fgetc(FILE *f)

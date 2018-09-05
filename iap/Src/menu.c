@@ -52,6 +52,8 @@
 #include "menu.h"
 #include "ymodem.h"
 
+extern UART_HandleTypeDef huart1;
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -60,6 +62,8 @@ pFunction JumpToApplication;
 uint32_t JumpAddress;
 uint32_t FlashProtection = 0;
 uint8_t aFileName[FILE_NAME_LENGTH];
+
+
 
 /* Private function prototypes -----------------------------------------------*/
 void SerialDownload(void);
@@ -119,7 +123,7 @@ void SerialUpload(void)
 
   Serial_PutString((uint8_t *)"\n\n\rSelect Receive File\n\r");
 
-  HAL_UART_Receive(&UartHandle, &status, 1, RX_TIMEOUT);
+  HAL_UART_Receive(&huart1, &status, 1, RX_TIMEOUT);
   if ( status == CRC16)
   {
     /* Transmit the flash image through ymodem protocol */
@@ -144,18 +148,6 @@ void SerialUpload(void)
 void Main_Menu(void)
 {
   uint8_t key = 0;
-
-  Serial_PutString((uint8_t *)"\r\n======================================================================");
-  Serial_PutString((uint8_t *)"\r\n=              (C) COPYRIGHT 2015 STMicroelectronics                 =");
-  Serial_PutString((uint8_t *)"\r\n=                                                                    =");
-  Serial_PutString((uint8_t *)"\r\n=  STM32L4xx In-Application Programming Application  (Version 1.0.0) =");
-  Serial_PutString((uint8_t *)"\r\n=                                                                    =");
-  Serial_PutString((uint8_t *)"\r\n=                                   By MCD Application Team          =");
-  Serial_PutString((uint8_t *)"\r\n======================================================================");
-  Serial_PutString((uint8_t *)"\r\n\r\n");
-
-  /* Test if any sector of Flash memory where user application will be loaded is write protected */
-  FlashProtection = FLASH_If_GetWriteProtectionStatus();
 
   while (1)
   {
@@ -183,10 +175,10 @@ void Main_Menu(void)
     Serial_PutString((uint8_t *)"==========================================================\r\n\n");
 
     /* Clean the input path */
-    __HAL_UART_FLUSH_DRREGISTER(&UartHandle);
+    __HAL_UART_FLUSH_DRREGISTER(&huart1);
 	
     /* Receive key */
-    HAL_UART_Receive(&UartHandle, &key, 1, RX_TIMEOUT);
+    HAL_UART_Receive(&huart1, &key, 1, RX_TIMEOUT);
 
     switch (key)
     {
