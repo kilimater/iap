@@ -44,6 +44,7 @@
 #include "main.h"
 
 extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart3;
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -182,7 +183,7 @@ HAL_StatusTypeDef Serial_PutByte( uint8_t param )
   {
     huart1.gState = HAL_UART_STATE_READY;
   }
-  return HAL_UART_Transmit(&huart1, &param, 1, TX_TIMEOUT);
+  return HAL_UART_Transmit(&huart3, &param, 1, TX_TIMEOUT);
 }
 /**
   * @}

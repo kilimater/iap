@@ -44,7 +44,7 @@ extern const struct fal_flash_dev nor_flash0;
 #define FAL_PART_TABLE                                                          \
 {                                                                               \
     {FAL_PART_MAGIC_WROD,       "bl", "stm32_onchip",         0,   128*1024, 0}, \
-    {FAL_PART_MAGIC_WROD,      "app", "stm32_onchip",   128*1024,  448*1024, 0}, \
+    {FAL_PART_MAGIC_WROD,      "app", "stm32_onchip",   128*1024,  384*1024, 0}, \
 }
 //    {FAL_PART_MAGIC_WROD, "download",    "norflash0", 1024*1024, 1024*1024, 0}, 
 #endif /* FAL_PART_HAS_TABLE_CFG */

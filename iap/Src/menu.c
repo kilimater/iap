@@ -204,17 +204,17 @@ void Main_Menu(void)
       if (FlashProtection != FLASHIF_PROTECTION_NONE)
       {
         /* Disable the write protection */
-        if (FLASH_If_WriteProtectionConfig(FLASHIF_WRP_DISABLE) == FLASHIF_OK)
-        {
-          Serial_PutString((uint8_t *)"Write Protection disabled...\r\n");
-          Serial_PutString((uint8_t *)"System will now restart...\r\n");
-          /* Launch the option byte loading */
-          HAL_FLASH_OB_Launch();
-        }
-        else
-        {
-          Serial_PutString((uint8_t *)"Error: Flash write un-protection failed...\r\n");
-        }
+//        if (FLASH_If_WriteProtectionConfig(FLASHIF_WRP_DISABLE) == FLASHIF_OK)
+//        {
+//          Serial_PutString((uint8_t *)"Write Protection disabled...\r\n");
+//          Serial_PutString((uint8_t *)"System will now restart...\r\n");
+//          /* Launch the option byte loading */
+//          HAL_FLASH_OB_Launch();
+//        }
+//        else
+//        {
+//          Serial_PutString((uint8_t *)"Error: Flash write un-protection failed...\r\n");
+//        }
       }
       else
       {

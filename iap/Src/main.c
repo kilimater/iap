@@ -74,6 +74,9 @@ const struct fal_partition *part;
 #define IAP_PAGE_SIZE 4096
 uint8_t iap_buffer[IAP_PAGE_SIZE] __attribute__((aligned(4)));
 
+uint8_t aFileName[FILE_NAME_LENGTH];
+pFunction JumpToApplication;
+uint32_t JumpAddress;
 
 
 
@@ -100,7 +103,9 @@ void FLASH_If_Init(void)
   HAL_FLASH_Unlock();
 
   /* Clear all FLASH flags */
-  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_PGSERR | FLASH_FLAG_WRPERR | FLASH_FLAG_OPTVERR);
+  //__HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_PGSERR | FLASH_FLAG_WRPERR | FLASH_FLAG_OPTVERR);
+
+  __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR| FLASH_FLAG_PGSERR);
   /* Unlock the Program memory */
   HAL_FLASH_Lock();
 }
@@ -113,39 +118,39 @@ void FLASH_If_Init(void)
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-  uint32_t byte_read_count;
-  /* USER CODE END 1 */
+    /* USER CODE BEGIN 1 */
+    uint32_t byte_read_count;
+    /* USER CODE END 1 */
 
-  /* MCU Configuration----------------------------------------------------------*/
+    /* MCU Configuration----------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    HAL_Init();
 
-  /* USER CODE BEGIN Init */
+    /* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+    /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+    /* Configure the system clock */
+    SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+    /* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+    /* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_SDIO_SD_Init();
-  MX_SPI1_Init();
-  MX_FATFS_Init();
-  MX_USART1_UART_Init();
-  MX_USART3_UART_Init();
-  MX_CRC_Init();
-  /* USER CODE BEGIN 2 */
+    /* Initialize all configured peripherals */
+    MX_GPIO_Init();
+    MX_SDIO_SD_Init();
+    MX_SPI1_Init();
+    MX_FATFS_Init();
+    MX_USART1_UART_Init();
+    MX_USART3_UART_Init();
+    MX_CRC_Init();
+    /* USER CODE BEGIN 2 */
 
-  fal_init();
-  FLASH_If_Init();
-  //sd update app
+    fal_init();
+    //FLASH_If_Init();
+    //sd update app
 	do {
 
 		if(f_mount(&SDFatFS,(const TCHAR *)"0:/",0) == RES_OK)
@@ -181,23 +186,22 @@ int main(void)
 		fal_partition_erase_all(part);
         printf("App partition erase ok!\r\n"); 
         uint8_t i;
-        for(i = 0; i ++; )
+        for(i = 0; ; i ++)
         {
-          FRESULT rt = f_read(&SDFile,iap_buffer,IAP_PAGE_SIZE,&byte_read_count);
-          printf("f_read return %d\r\n",rt); 
-          printf("byte_read_count = %d\r\n",byte_read_count); 
-          if(rt != FR_OK || byte_read_count == 0)
-          {
-            break;
-          }
+            FRESULT rt = f_read(&SDFile,iap_buffer,IAP_PAGE_SIZE,&byte_read_count);
+            printf("%3d byte_read_count = %d\r\n",i,byte_read_count); 
+            if(rt != FR_OK || byte_read_count == 0)
+            {
+                break;
+            }
             if(byte_read_count < IAP_PAGE_SIZE)
             {
-              fal_partition_write(part, i * IAP_PAGE_SIZE,iap_buffer,byte_read_count);
-              break;
+                fal_partition_write(part, i * IAP_PAGE_SIZE,iap_buffer,byte_read_count);
+                break;
             }
             else
             {
-              fal_partition_write(part, i * IAP_PAGE_SIZE,iap_buffer,IAP_PAGE_SIZE);
+                fal_partition_write(part, i * IAP_PAGE_SIZE,iap_buffer,IAP_PAGE_SIZE);
             }
             memset(iap_buffer,0,IAP_PAGE_SIZE);
         }
@@ -205,42 +209,52 @@ int main(void)
         printf("Copy file ok!\r\n"); 
         printf("Jump to application!\r\n"); 
         /* execute the new program */
-        JumpAddress = *(volatile uint32_t*) (0x08020000 + 4);
+        JumpAddress = *(volatile uint32_t*) (APP_ADDRESS + 4);
         /* Jump to user application */
         JumpToApplication = (pFunction) JumpAddress;
         /* Initialize user application's Stack Pointer */
-        __set_MSP(*(volatile uint32_t*) 0x08020000);
+        __set_MSP(*(volatile uint32_t*) APP_ADDRESS);
         JumpToApplication();
 	
 	}while(0);
-  //ymodem update app
-  part = fal_partition_find("app");
-  if(part != NULL)
-  {
-    printf("fal find app partition!\r\n"); 
-  }
-  else
-  {
-    printf("fal can not find app partition!\r\n");
-    break;
-  }
-  fal_partition_erase_all(part);
-  printf("App partition erase ok!\r\n"); 
+    //ymodem update app
 
-	Main_Menu();
-  /* USER CODE END 2 */
+    printf("Wait for download app from PC!\r\n"); 
+    /* Clean the input path */
+    __HAL_UART_FLUSH_DRREGISTER(&huart3);
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+    ret = HAL_UART_Receive(&huart3, &key, 1, RX_TIMEOUT);
+    
+    result = Ymodem_Receive( &size );
 
-  /* USER CODE END WHILE */
 
-  /* USER CODE BEGIN 3 */
 
-  }
-  /* USER CODE END 3 */
+    part = fal_partition_find("app");
+    if(part != NULL)
+    {
+        printf("fal find app partition!\r\n"); 
+    }
+    else
+    {
+        printf("fal can not find app partition!\r\n");
+    }
+    fal_partition_erase_all(part);
+    printf("App partition erase ok!\r\n"); 
+
+    //Main_Menu();
+    /* USER CODE END 2 */
+
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
+    while (1)
+    {
+
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+
+    }
+    /* USER CODE END 3 */
 
 }
 
@@ -307,23 +321,23 @@ static void MX_CRC_Init(void)
 
   hcrc.Instance = CRC;
 
-  /* The CRC-16-CCIT polynomial is used */
-  hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_DISABLE;
-  hcrc.Init.GeneratingPolynomial    = 0x1021;
-  hcrc.Init.CRCLength               = CRC_POLYLENGTH_16B;
+//  /* The CRC-16-CCIT polynomial is used */
+//  hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_DISABLE;
+//  hcrc.Init.GeneratingPolynomial    = 0x1021;
+//  hcrc.Init.CRCLength               = CRC_POLYLENGTH_16B;
 
-  /* The zero init value is used */
-  hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_DISABLE;
-  hcrc.Init.InitValue               = 0;
+//  /* The zero init value is used */
+//  hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_DISABLE;
+//  hcrc.Init.InitValue               = 0;
 
-  /* The input data are not inverted */
-  hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
+//  /* The input data are not inverted */
+//  hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
 
-  /* The output data are not inverted */
-  hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+//  /* The output data are not inverted */
+//  hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
 
-  /* The input data are 32-bit long words */
-  hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
+//  /* The input data are 32-bit long words */
+//  hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
 
 
   if (HAL_CRC_Init(&hcrc) != HAL_OK)

@@ -50,3 +50,6 @@ iap\main.o: ..\fal\inc\fal.h
 iap\main.o: ..\fal\samples\porting\fal_cfg.h
 iap\main.o: ../Inc/config.h
 iap\main.o: ..\fal\inc\fal_def.h
+iap\main.o: ../Inc/menu.h
+iap\main.o: ../Inc/flash_if.h
+iap\main.o: ../Inc/ymodem.h

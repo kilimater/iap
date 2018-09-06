@@ -130,9 +130,9 @@ static int write(long offset, const uint8_t *buf, size_t size)
     uint32_t addr = stm32f4_onchip_flash.addr + offset;
 
     HAL_FLASH_Unlock();
-    // __HAL_FLASH_CLEAR_FLAG(
-    //         FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR
-    //                 | FLASH_FLAG_PGSERR);
+    __HAL_FLASH_CLEAR_FLAG(
+            FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR
+                    | FLASH_FLAG_PGSERR);
     for (i = 0; i < size; i++, buf++, addr++)
     {
         /* write data */
@@ -155,30 +155,31 @@ static int erase(long offset, size_t size)
     uint32_t cur_erase_sector;
     uint32_t addr = stm32f4_onchip_flash.addr + offset;
 
-    FLASH_EraseInitTypeDef FlashEraseInit;
-    HAL_StatusTypeDef FlashStatus = HAL_OK;
-    uint32_t SectorError = 0;
+    // FLASH_EraseInitTypeDef FlashEraseInit;
+    // HAL_StatusTypeDef FlashStatus = HAL_OK;
+    // uint32_t SectorError = 0;
 
     /* start erase */
     HAL_FLASH_Unlock();
-    // __HAL_FLASH_CLEAR_FLAG(
-    //         FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR
-    //                 | FLASH_FLAG_PGSERR);
+    __HAL_FLASH_CLEAR_FLAG(
+            FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR
+                    | FLASH_FLAG_PGSERR);
     /* it will stop when erased size is greater than setting size */
     while (erased_size < size)
     {
         cur_erase_sector = stm32_get_sector(addr + erased_size); 
         
-        FlashEraseInit.TypeErase = FLASH_TYPEERASE_SECTORS;      
-        FlashEraseInit.Sector = cur_erase_sector; 
-        FlashEraseInit.NbSectors = 1;                             
-        FlashEraseInit.VoltageRange = FLASH_VOLTAGE_RANGE_3;      
-        if(HAL_FLASHEx_Erase(&FlashEraseInit,&SectorError) != HAL_OK) 
-        {
-            printf("Erase flash sector occur error!\r\n");
-            break;
-        }
-        FLASH_WaitForLastOperation(10000); 
+        // FlashEraseInit.TypeErase = FLASH_TYPEERASE_SECTORS;      
+        // FlashEraseInit.Sector = cur_erase_sector; 
+        // FlashEraseInit.NbSectors = 1;                             
+        // FlashEraseInit.VoltageRange = FLASH_VOLTAGE_RANGE_3;      
+        // if(HAL_FLASHEx_Erase(&FlashEraseInit,&SectorError) != HAL_OK) 
+        // {
+        //     printf("Erase flash sector occur error!\r\n");
+        //     break;
+        // }
+        // FLASH_WaitForLastOperation(10000); 
+        FLASH_Erase_Sector(cur_erase_sector, FLASH_VOLTAGE_RANGE_3);
         erased_size += stm32_get_sector_size(cur_erase_sector);
     }
     HAL_FLASH_Lock();
