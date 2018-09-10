@@ -23,7 +23,7 @@
 "iap\stm32f4xx_hal_uart.o"
 "iap\stm32f4xx_hal_pwr_ex.o"
 "iap\stm32f4xx_hal_sd.o"
-"iap\stm32f4xx_hal_crc.o"
+"iap\stm32f4xx_hal_crc_1.o"
 "iap\system_stm32f4xx.o"
 "iap\stm32f4xx_it.o"
 "iap\sd_diskio.o"

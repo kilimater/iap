@@ -295,11 +295,11 @@ void BSP_SD_GetCardInfo(HAL_SD_CardInfoTypeDef *CardInfo)
 uint8_t BSP_SD_IsDetected(void)
 {
   __IO uint8_t status = SD_PRESENT;
-	uint8_t pin;
+    uint8_t pin;
   /* USER CODE BEGIN 1 */
-  pin = HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_3);
-  if(pin == 1) status = SD_NOT_PRESENT;
-  else status = SD_PRESENT;
+    pin = HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_3);
+    if(pin == 1) status = SD_NOT_PRESENT;
+    else status = SD_PRESENT;
 
   /* USER CODE END 1 */    	
 

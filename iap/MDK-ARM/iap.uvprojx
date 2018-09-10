@@ -274,7 +274,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x80000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx,USE_FULL_ASSERT</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;      ../Drivers/STM32F4xx_HAL_Driver/Inc;      ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;      ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;      ../Middlewares/Third_Party/FatFs/src;      ../Drivers/CMSIS/Include;      ..\fal\inc;      ..\fal\samples\porting;      ..\sfud\inc</IncludePath>
+              <IncludePath>../Inc;         ../Drivers/STM32F4xx_HAL_Driver/Inc;         ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;         ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;         ../Middlewares/Third_Party/FatFs/src;         ../Drivers/CMSIS/Include;         ..\fal\inc;         ..\fal\samples\porting;         ..\sfud\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -514,7 +514,7 @@
             <File>
               <FileName>stm32f4xx_hal_crc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_crc.c</FilePath>
+              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c</FilePath>
             </File>
           </Files>
         </Group>

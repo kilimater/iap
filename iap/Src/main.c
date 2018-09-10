@@ -118,35 +118,35 @@ void FLASH_If_Init(void)
   */
 int main(void)
 {
-    /* USER CODE BEGIN 1 */
+  /* USER CODE BEGIN 1 */
     uint32_t byte_read_count;
-    /* USER CODE END 1 */
+  /* USER CODE END 1 */
 
-    /* MCU Configuration----------------------------------------------------------*/
+  /* MCU Configuration----------------------------------------------------------*/
 
-    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-    HAL_Init();
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
-    /* USER CODE BEGIN Init */
+  /* USER CODE BEGIN Init */
 
-    /* USER CODE END Init */
+  /* USER CODE END Init */
 
-    /* Configure the system clock */
-    SystemClock_Config();
+  /* Configure the system clock */
+  SystemClock_Config();
 
-    /* USER CODE BEGIN SysInit */
+  /* USER CODE BEGIN SysInit */
 
-    /* USER CODE END SysInit */
+  /* USER CODE END SysInit */
 
-    /* Initialize all configured peripherals */
-    MX_GPIO_Init();
-    MX_SDIO_SD_Init();
-    MX_SPI1_Init();
-    MX_FATFS_Init();
-    MX_USART1_UART_Init();
-    MX_USART3_UART_Init();
-    MX_CRC_Init();
-    /* USER CODE BEGIN 2 */
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_SDIO_SD_Init();
+  MX_SPI1_Init();
+  MX_FATFS_Init();
+  MX_USART1_UART_Init();
+  MX_USART3_UART_Init();
+  MX_CRC_Init();
+  /* USER CODE BEGIN 2 */
 
     fal_init();
     //FLASH_If_Init();
@@ -162,14 +162,15 @@ int main(void)
 			printf("FatFs mount fail!\r\n");
 			break;
 		}
-		
-		if(f_open(&SDFile, (const TCHAR *)"0:/eQ1620.bin",FA_OPEN_EXISTING|FA_READ) == FR_OK)
+		uint32_t ret = f_open(&SDFile, (const TCHAR *)"0:/eQ1620.bin",FA_OPEN_EXISTING|FA_READ);
+        
+		if(ret == FR_OK)
 		{
 			printf("Open file ok!\r\n");
 		}
 		else
 		{
-			printf("Open file fail!\r\n");
+			printf("Open file fail! ret = %d\r\n",ret);
 			break;
 		}	
 
@@ -207,54 +208,55 @@ int main(void)
         }
 		f_close(&SDFile);
         printf("Copy file ok!\r\n"); 
-        printf("Jump to application!\r\n"); 
-        /* execute the new program */
-        JumpAddress = *(volatile uint32_t*) (APP_ADDRESS + 4);
-        /* Jump to user application */
-        JumpToApplication = (pFunction) JumpAddress;
-        /* Initialize user application's Stack Pointer */
-        __set_MSP(*(volatile uint32_t*) APP_ADDRESS);
-        JumpToApplication();
-	
 	}while(0);
+
+
+    printf("Jump to application!\r\n"); 
+    /* execute the new program */
+    JumpAddress = *(volatile uint32_t*) (APP_ADDRESS + 4);
+    /* Jump to user application */
+    JumpToApplication = (pFunction) JumpAddress;
+    /* Initialize user application's Stack Pointer */
+    __set_MSP(*(volatile uint32_t*) APP_ADDRESS);
+    JumpToApplication();
     //ymodem update app
 
-    printf("Wait for download app from PC!\r\n"); 
-    /* Clean the input path */
-    __HAL_UART_FLUSH_DRREGISTER(&huart3);
+//    printf("Wait for download app from PC!\r\n"); 
+//    /* Clean the input path */
+//    __HAL_UART_FLUSH_DRREGISTER(&huart3);
 
-    ret = HAL_UART_Receive(&huart3, &key, 1, RX_TIMEOUT);
-    
-    result = Ymodem_Receive( &size );
+//    ret = HAL_UART_Receive(&huart3, &key, 1, RX_TIMEOUT);
+//    
+//    result = Ymodem_Receive( &size );
 
 
 
-    part = fal_partition_find("app");
-    if(part != NULL)
-    {
-        printf("fal find app partition!\r\n"); 
-    }
-    else
-    {
-        printf("fal can not find app partition!\r\n");
-    }
-    fal_partition_erase_all(part);
-    printf("App partition erase ok!\r\n"); 
+//    part = fal_partition_find("app");
+//    if(part != NULL)
+//    {
+//        printf("fal find app partition!\r\n"); 
+//    }
+//    else
+//    {
+//        printf("fal can not find app partition!\r\n");
+//    }
+//    fal_partition_erase_all(part);
+//    printf("App partition erase ok!\r\n"); 
 
     //Main_Menu();
-    /* USER CODE END 2 */
+  /* USER CODE END 2 */
 
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
     while (1)
     {
 
-    /* USER CODE END WHILE */
+  /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+  /* USER CODE BEGIN 3 */
 
     }
-    /* USER CODE END 3 */
+  /* USER CODE END 3 */
 
 }
 
@@ -320,26 +322,6 @@ static void MX_CRC_Init(void)
 {
 
   hcrc.Instance = CRC;
-
-//  /* The CRC-16-CCIT polynomial is used */
-//  hcrc.Init.DefaultPolynomialUse    = DEFAULT_POLYNOMIAL_DISABLE;
-//  hcrc.Init.GeneratingPolynomial    = 0x1021;
-//  hcrc.Init.CRCLength               = CRC_POLYLENGTH_16B;
-
-//  /* The zero init value is used */
-//  hcrc.Init.DefaultInitValueUse     = DEFAULT_INIT_VALUE_DISABLE;
-//  hcrc.Init.InitValue               = 0;
-
-//  /* The input data are not inverted */
-//  hcrc.Init.InputDataInversionMode  = CRC_INPUTDATA_INVERSION_NONE;
-
-//  /* The output data are not inverted */
-//  hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
-
-//  /* The input data are 32-bit long words */
-//  hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_BYTES;
-
-
   if (HAL_CRC_Init(&hcrc) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
