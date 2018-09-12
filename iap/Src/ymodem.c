@@ -156,7 +156,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
   COM_StatusTypeDef result = COM_OK;
 
   /* Initialize flashdestination variable */
-  flashdestination = APPLICATION_ADDRESS;
+  flashdestination = 0;
 
   while ((session_done == 0) && (result == COM_OK))
   {
@@ -224,7 +224,7 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                     }
                     /* erase user application area */
 					          //FLASH_If_Erase(APPLICATION_ADDRESS);
-                    part = fal_partition_find("app");
+                    const struct fal_partition *part = fal_partition_find("app");
                     if(part == NULL)  
                       printf("App partition wrong!\r\n");
                     else 
@@ -246,11 +246,12 @@ COM_StatusTypeDef Ymodem_Receive ( uint32_t *p_size )
                 }
                 else /* Data packet */
                 {
-                  ramsource = & aPacketData[PACKET_DATA_INDEX];
+                  ramsource = (uint32_t)&aPacketData[PACKET_DATA_INDEX];
 
                   /* Write received data in Flash */
-                  fal_partition_write(part, flashdestination,ramsource,packet_length) >;
-                  if (FLASH_If_Write(flashdestination, ramsource, packet_length/4) == FLASHIF_OK)                   
+                  const struct fal_partition *part = fal_partition_find("app");
+                  int t = fal_partition_write(part, flashdestination,(const uint8_t *)ramsource,packet_length);
+                  if(t == packet_length)
                   {
                     flashdestination += packet_length;
                     Serial_PutByte(ACK);

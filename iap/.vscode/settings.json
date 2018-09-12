@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "fatfs.h": "c"
+        "fatfs.h": "c",
+        "main.h": "c",
+        "common.h": "c"
     }
 }

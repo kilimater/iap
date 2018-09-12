@@ -32,6 +32,7 @@ iap\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_sd.h
 iap\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_sdmmc.h
 iap\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
 iap\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+iap\main.o: ../Inc/common.h
 iap\main.o: ../Inc/fatfs.h
 iap\main.o: ../Middlewares/Third_Party/FatFs/src/ff.h
 iap\main.o: ../Middlewares/Third_Party/FatFs/src/integer.h
@@ -50,6 +51,4 @@ iap\main.o: ..\fal\inc\fal.h
 iap\main.o: ..\fal\samples\porting\fal_cfg.h
 iap\main.o: ../Inc/config.h
 iap\main.o: ..\fal\inc\fal_def.h
-iap\main.o: ../Inc/menu.h
-iap\main.o: ../Inc/flash_if.h
 iap\main.o: ../Inc/ymodem.h

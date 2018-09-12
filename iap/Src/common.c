@@ -168,7 +168,7 @@ void Serial_PutString(uint8_t *p_string)
   {
     length++;
   }
-  HAL_UART_Transmit(&huart1, p_string, length, TX_TIMEOUT);
+  HAL_UART_Transmit(&huart3, p_string, length, TX_TIMEOUT);
 }
 
 /**
@@ -183,7 +183,7 @@ HAL_StatusTypeDef Serial_PutByte( uint8_t param )
   {
     huart1.gState = HAL_UART_STATE_READY;
   }
-  return HAL_UART_Transmit(&huart3, &param, 1, TX_TIMEOUT);
+  return HAL_UART_Transmit(&huart1, &param, 1, TX_TIMEOUT);
 }
 /**
   * @}

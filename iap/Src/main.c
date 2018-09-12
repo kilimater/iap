@@ -49,13 +49,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_hal.h"
+#include "common.h"
 #include "fatfs.h"
 
 /* USER CODE BEGIN Includes */
 #include <sfud.h>
 #include <fal.h>
-#include "menu.h"
+#include "ymodem.h"
+
 /* USER CODE END Includes */
+typedef  void (*pFunction)(void);
 
 /* Private variables ---------------------------------------------------------*/
 CRC_HandleTypeDef hcrc;
@@ -119,7 +122,8 @@ void FLASH_If_Init(void)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-    uint32_t byte_read_count;
+    uint32_t byte_read_count = 0;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -149,6 +153,16 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
     fal_init();
+    part = fal_partition_find("app");
+    if(part != NULL)
+    {
+        printf("fal find app partition!\r\n"); 
+    }
+    else
+    {
+        printf("fal can not find app partition!\r\n");
+    
+    }
     //FLASH_If_Init();
     //sd update app
 	do {
@@ -174,16 +188,7 @@ int main(void)
 			break;
 		}	
 
-		part = fal_partition_find("app");
-		if(part != NULL)
-		{
-            printf("fal find app partition!\r\n"); 
-		}
-		else
-		{
-            printf("fal can not find app partition!\r\n");
-            break;
-		}
+
 		fal_partition_erase_all(part);
         printf("App partition erase ok!\r\n"); 
         uint8_t i;
@@ -208,8 +213,56 @@ int main(void)
         }
 		f_close(&SDFile);
         printf("Copy file ok!\r\n"); 
+
 	}while(0);
 
+  //ymodem update app
+  do{
+    printf("Wait for download app from PC!\r\n"); 
+    /* Clean the input path */
+    __HAL_UART_FLUSH_DRREGISTER(&huart1);
+    __HAL_UART_CLEAR_FLAG(&uart1, UART_FLAG_RXNE);
+
+    uint8_t number[11] = {0};
+    uint8_t key = 0;   
+    uint32_t ret = HAL_UART_Receive(&huart1, &key, 1, RX_TIMEOUT);
+    if(ret == HAL_TIMEOUT) 
+    {
+        printf("WAIT CMD time out!\r\n"); 
+        break;
+    }
+    if(key != 0x01) break;
+    
+    uint32_t size = 0;
+    COM_StatusTypeDef result = Ymodem_Receive( &size );
+
+    if (result == COM_OK)
+    {
+      printf( "Programming Completed Successfully!\n\r--------------------------------\r\n Name: ");
+      printf(aFileName);
+      Int2Str(number, size);
+      printf("\n\r Size: ");
+      printf(number);
+      printf(" Bytes\r\n");
+      printf("-------------------\n");
+    }
+    else if (result == COM_LIMIT)
+    {
+      printf("\n\n\rThe image size is higher than the allowed space memory!\n\r");
+    }
+    else if (result == COM_DATA)
+    {
+      printf("\n\n\rVerification failed!\n\r");
+    }
+    else if (result == COM_ABORT)
+    {
+      printf("\r\n\nAborted by user.\n\r");
+    }
+    else
+    {
+      printf("\n\rFailed to receive the file!\n\r");
+    }
+  }while(0);
 
     printf("Jump to application!\r\n"); 
     /* execute the new program */
@@ -219,31 +272,7 @@ int main(void)
     /* Initialize user application's Stack Pointer */
     __set_MSP(*(volatile uint32_t*) APP_ADDRESS);
     JumpToApplication();
-    //ymodem update app
 
-//    printf("Wait for download app from PC!\r\n"); 
-//    /* Clean the input path */
-//    __HAL_UART_FLUSH_DRREGISTER(&huart3);
-
-//    ret = HAL_UART_Receive(&huart3, &key, 1, RX_TIMEOUT);
-//    
-//    result = Ymodem_Receive( &size );
-
-
-
-//    part = fal_partition_find("app");
-//    if(part != NULL)
-//    {
-//        printf("fal find app partition!\r\n"); 
-//    }
-//    else
-//    {
-//        printf("fal can not find app partition!\r\n");
-//    }
-//    fal_partition_erase_all(part);
-//    printf("App partition erase ok!\r\n"); 
-
-    //Main_Menu();
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -47,7 +47,7 @@
 /* Exported constants --------------------------------------------------------*/
 /* Constants used by Serial Command Line Mode */
 #define TX_TIMEOUT          ((uint32_t)100)
-#define RX_TIMEOUT          HAL_MAX_DELAY
+#define RX_TIMEOUT          ((uint32_t)10000)
 
 /* Exported macro ------------------------------------------------------------*/
 #define IS_CAP_LETTER(c)    (((c) >= 'A') && ((c) <= 'F'))
@@ -67,7 +67,6 @@ void Serial_PutString(uint8_t *p_string);
 HAL_StatusTypeDef Serial_PutByte(uint8_t param);
 
 
-extern UART_HandleTypeDef huart1;
 #endif  /* __COMMON_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
